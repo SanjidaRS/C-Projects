@@ -1,0 +1,145 @@
+#include <iostream>  //standard input-output stream library
+#include <fstream>   //file stream library, enabling file operations
+#include <string>    //string library, allowing the use of the string class for handling text data
+using namespace std;
+
+// Class for handling user authentication
+class temp
+{
+    string userName, Email, Password;  //store the user's username, email, and password
+    string searchName, searchPass, searchEmail;  //used for searching the user's information
+    fstream file; //allowing the class to read from and write to files
+
+public:
+    // Member functions for user operations
+    void login();
+    void signUp();
+    void forgot();
+} obj;
+
+
+int main ()
+{
+    char choice;
+    // Display menu to the user
+    cout <<"\n1 - Login";
+    cout <<"\n2 - Sign up";
+    cout <<"\n3 - Forgot Password?";
+    cout <<"\n4 - Exit";
+    cout <<"\nEnter your choice:: ";
+    cin >> choice; //Reads the user's choice from input
+    cin.ignore();  // To consume the newline character left in the buffer
+
+    // Perform action based on user's choice
+    switch(choice)
+    {
+    case '1':
+        obj.login();
+        break;
+    case '2':
+        obj.signUp();
+        break;
+    case '3':
+        obj.forgot();
+        break;
+    case '4':
+        return 0;
+        break;
+    default:
+        cout << "Invalid choice!";
+    }
+    return 0;
+}
+
+// Function to sign up a new user
+void temp ::signUp()
+{
+//Prompts the user to enter their username, email, and password using getline to read entire lines of text
+    cout<<"\nEnter your user name:: ";
+    getline(cin, userName);
+    cout<<"\nEnter your Email address:: ";
+    getline(cin, Email);
+    cout<<"\nEnter your password:: ";
+    getline(cin, Password);
+
+    // Open file to append new user data
+    file.open("loginData.txt", ios :: out | ios :: app);
+    file<<userName<<"**"<<Email<<"**"<<Password<<endl; //Writes the user's data to the file, separating fields with "**"
+    file.close();
+}
+
+// Function to log in an existing user
+void temp :: login()
+{
+    string searchName, searchPass;
+    cout <<"------LOGIN-----------"<< endl;
+    cout <<"Enter your user name::"<< endl;
+    getline(cin,searchName);
+    cout <<"Enter your password::"<< endl;
+    getline(cin,searchPass);
+
+    // Open file to read user data
+    file("loginData.txt", ios :: in); //Opens the file loginData.txt in input mode
+
+    //Reads the user data line by line, splitting by the '*' delimiter
+    getline(file, userName, '*');
+    getline(file, Email, '*');
+    getline(file, Password, '\n');
+    while(!file.eof())
+    {
+        // Check if the entered username and password match
+        if(userName == searchName)
+        {
+            if(Password == searchPass)
+            {
+                cout<<"\nAccount Login Successful !";
+                cout<<"\nUsername :: "<<userName<< endl;
+                cout<<"\nPassword :: "<<Email<< endl;
+            }
+            else
+            {
+                cout<<"Password is incorrect !";
+            }
+        }
+    }
+    file.close();
+}
+
+
+// Function to recover password
+void temp :: forgot()
+{
+    cout <<"\nEnter your username :: ";
+    getline(cin, searchName);
+    cout <<"\nEnter your Email address :: ";
+    getline(cin, searchEmail);
+
+    // Open file to read user data
+    file.open("loginData.txt", ios :: in);
+
+    // Read user data from file
+    getline(file, userName, '*');
+    getline(file, Email, '*');
+    getline(file, Password, '\n');
+
+    while(!file.eof())
+    {
+        // Check if the entered username and email match
+        if(userName == searchName)
+        {
+            if(Email == searchEmail)
+            {
+                cout <<"\nAccount Found !!"<<endl;
+                cout<<"Your password :: "<< Password<< endl;
+            }
+            else
+            {
+                cout <<"Not Found!\n";
+            }
+        }
+        else
+        {
+            cout << "\nNot found!\n";
+        }
+    }
+}
