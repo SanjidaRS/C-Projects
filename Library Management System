@@ -1,0 +1,112 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+// Class definition to handle book operations
+class temp {
+    string id, name, author, search;  // Variables to store book details and search term
+    fstream file;                     // File stream object to handle file operations
+    public: 
+        void addBook();       // Function to add a new book
+        void showAll();      // Function to display all books
+        void extractBook();  // Function to extract a book based on ID
+}obj;   // Creating an object of class temp
+
+int main (){
+    
+    char choice;   // Variable to store user's menu choice
+// Display the menu
+    cout << "------------------------------\n";
+    cout << "1. Show all books\n";
+    cout << "2. Extract Book\n";
+    cout << "3. Add Books (ADMIN)\n";
+    cout << "4. Exit\n";
+    cout << "------------------------------\n";
+    cout << "Enter your choice :: ";
+    cin >> choice;
+
+//Execute the corresponding function based on user's choice
+    switch(choice){
+        case '1':
+            cin.ignore();    // Ignore the newline character left in the buffer
+            obj.showAll();
+        break;
+        case '2':
+            cin.ignore();
+            obj.addBook();
+        break;
+        case '3':
+            cin.ignore();
+            obj.extractBook();
+        break;
+        case '4':
+          return 0;
+        break;
+        default: 
+            cout<<"Invalid choice";
+    }
+    return 0;
+}
+
+void temp :: addBook(){
+// Prompt the user to enter book details
+    cout<<"\nEnter Book ID :: ";
+    getline(cin, id);
+    cout<<"\nEnter Book name :: ";
+    getline(cin, name);
+    cout<<"\nEnter Book's author anme:: ";
+    getline(cin, author);
+
+// Open the file in append mode to add new book details
+    file.open("bookData.txt", ios :: out | ios :: app);
+    file<<id<<"**"<<name<<"**"<<author<<endl;
+    file.close();
+}
+
+void temp :: showAll(){
+// Open the file in input mode to read book details
+        file.open("bookData.txt", ios :: in);
+
+// Read and display book details from the file
+        getline(file, id, "*");
+        getline(file, name, "*");
+        getline(file, author, '\n');
+            cout<<"\n\n";
+            cout<<"\t\t Book ID \t\t\t Book Name \t\t\t Author's name"<<endl;
+        while(!file.eof()){
+            cout<<"\t\t"<<id<<"\t\t\t"<<name<<"\t\t\t"<<author<<endl;
+             getline(file, id, "*");
+             getline(file, name, "*");
+             getline(file, author, '\n');
+        }
+        file.close();
+}
+    
+    
+void temp :: extractBooks(){
+
+// Display all books first
+    showAll();
+    cout<<"Enter Book Id :: ";
+    getline(cin, search);
+
+// Open the file in input mode to search for the book
+     file.open("bookData.txt", ios :: in);
+     getline(file, id, "*");
+     getline(file, name, "*");
+     getline(file, author, '\n');
+     
+     cout<<"\n\n";
+     cout<<"\t\t Book ID \t\t\t Book Name \t\t\t Author's name"<<endl;
+     while(!file.eof()){
+         if (id == search){
+             cout<<"\t\t"<<id<<"\t\t\t"<<name<<"\t\t\t"<<author<<endl;
+             cout<<"Book Extracted Successfully !!";
+         }
+        getline(file, id, '*');
+        getline(file, name, '*');
+        getline(file, author, '\n');
+     }
+     file.close();
+}
